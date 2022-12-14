@@ -1,0 +1,69 @@
+--Bài 2 
+select MAHD, SUM(DONGIA* SLBAN)
+from HANGXUAT
+group by MAHD
+--Bài 3
+create function getThu(@ngay DATETIME)
+	returns nvarchar(100)
+as
+begin
+	declare @songaytrongtuan int;
+	set @songaytrongtuan = datepart(weekday, @ngay);
+	declare @thu nvarchar(100);
+
+	if (@songaytrongtuan = 0)
+	begin
+		set @thu ='thu hai';
+	end
+
+	if (@songaytrongtuan = 1)
+	begin
+		set @thu = 'thu ba';
+	end
+
+	if (@songaytrongtuan = 2)
+	begin
+		set @thu = 'thu tu';
+	end
+
+	if (@songaytrongtuan = 3)
+	begin
+		set @thu = 'thu nam';
+	end
+
+	if (@songaytrongtuan = 4)
+	begin
+		set @thu = 'thu sau';
+	end
+
+	if(@songaytrongtuan = 5)
+	begin
+		set @thu ='thu bay';
+	end
+
+	if(@songaytrongtuan = 6)
+	begin
+		set @thu ='chu nhat';
+	end
+
+	return @thu;
+end
+
+go
+create function cau3(@mahd int)
+returns table
+as
+	return
+		select dbo.HDBAN.MAHD, NgayXuat, MaVT, DonGia, SLBan, getThu(NGAYXUAT) as 'NgayThu'
+		from dbo.HANGXUAT, dbo.HDBAN
+		where dbo.HDBAN.MAHD = dbo.HANGXUAT.MAHD And dbo.HANGXUAT.MAHD = @mahd
+
+-- Câu 4
+CREATE PROCEDURE p4 
+@thang int, @nam int 
+AS
+SELECT 
+SUM(SLBAN * DONGIA)
+FROM HANGXUAT HX
+INNER JOIN HDBAN HD ON HX.MAHD = HD.MAHD
+where MONTH(HD.NGAYXUAT) = @THANG AND YEAR(HD.NGAYXUAT) = @NAM;
